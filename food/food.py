@@ -8,15 +8,15 @@ food_route = Blueprint('food_route', __name__)
 
 def serialize_document_id(food_list):
     foods_data = []
-    for food in range(0, len(food_list)):
-        food_dict = {}
+    for i in range(0, len(food_list)):
         for index in food_list:
+            food_dict = {}
             for key in index:
                 if key == 'id':
                     food_dict[key] = str(index[key])
-                    continue
-                food_dict[key] = index[key]
-        foods_data.append(food_dict)
+                else:
+                    food_dict[key] = index[key]
+            foods_data.append(food_dict)
     return foods_data
 
 
