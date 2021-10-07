@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from models.food import Foods
+from auth.verify_token import verify_user
 import traceback
 
 
@@ -23,6 +24,13 @@ def serialize_document_id(food_list):
 def get_food_by_name(food_name):
     
     try:
+
+        if not verify_user(request.headers.get('x-access-token')):
+            return jsonify({
+                'accepted': False,
+                'message': 'invalid token'
+            }), 406
+
         food_db = Foods.objects.filter(foodName__contains=food_name)
         food_data = serialize_document_id(food_db)
         return jsonify(food_data), 200

@@ -6,7 +6,7 @@ import traceback
 
 def verify_user(access_token):
     try:
-        token = jwt.decode(access_token, Config.SECRET_KEY)
+        token = jwt.decode(access_token, Config.SECRET_KEY, algorithms=['HS256'])
         if len(Users.objects(id=token['user_id'])) != 1:
             return False
         return True
