@@ -20,8 +20,8 @@ def serialize_document_id(food_list):
     return foods_data
 
 
-@food_route.route('/food/<food_name>', methods=['GET'])
-def get_food_by_name(food_name):
+@food_route.route('/food/<food_name>/<int:page>', methods=['GET'])
+def get_food_by_name(food_name, page):
     
     try:
 
@@ -31,9 +31,15 @@ def get_food_by_name(food_name):
                 'message': 'invalid token'
             }), 406
 
-        food_db = Foods.objects.filter(foodName__contains=food_name)
+        if page == 1:
+            food_db = Foods.objects.filter(foodName__contains=food_name).limit(10)
+            food_data = serialize_document_id(food_db)
+            return jsonify(food_data), 200
+        
+        food_db = Foods.objects.filter(foodName__contains=food_name).skip((page-1)*10).limit(10)
         food_data = serialize_document_id(food_db)
         return jsonify(food_data), 200
+
 
     except Exception:
         traceback.print_exc()
