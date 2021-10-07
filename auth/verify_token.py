@@ -2,6 +2,7 @@ from traceback import print_exc
 from config.config import Config
 from models.user import Users
 import jwt
+import traceback
 
 def verify_user(access_token):
     try:
@@ -10,6 +11,7 @@ def verify_user(access_token):
             return False
         return True
     except Exception:
+        traceback.print_exc()
         return False
 
 
