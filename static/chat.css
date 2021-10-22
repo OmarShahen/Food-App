@@ -1,0 +1,108 @@
+body{
+    padding: 0;
+    margin: 0;
+    background-color: #50B8FF;
+}
+
+.chat-header{
+    color: white;
+    padding: 1rem;
+}
+.users{
+    padding: 1rem;
+    background-color: #fff;
+    border-right: 2px solid #f2f2f2;
+
+}
+.users-contacts{
+    margin-top: 1rem;
+    padding-left: 1rem;
+}
+ul li {
+    list-style-type: none;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+li img, .avatar{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 1rem;
+}
+
+.user-chat{
+    background-color: #fff;
+    height: 100vh;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.user-chat-header{
+    background-color: #fff;
+    padding: 1rem;
+    border-bottom: 2px solid #f2f2f2;
+}
+
+.right-message, .left-message{
+    display: block;
+}
+
+.left-message p{
+    padding: 0.5rem;
+    background-color: #50B8FF;
+    color: #fff;
+    margin: 0.5rem;
+    text-align: right;
+    
+}
+.right-message p{
+    padding: 0.5rem;
+    background-color: #f2f2f2;
+    margin: 0.5rem;
+    text-align: left;
+}
+
+.chat-separator{
+    padding: 1rem;
+}
+
+.type-bar{
+    border-radius: 50px;
+    width: 80%;
+    margin-left: 0rem;
+    display: inline;
+}
+
+.input-background
+{
+    background-color: #f2f2f2;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    padding: 1rem;
+}
+
+.send-btn{
+    margin-left: 1rem;
+}
+@media only screen and (max-width: 900px) {
+    .users {
+        display: none;
+    }
+    .send-btn {
+        margin-left: 0.5px;
+    }
+}
+@media only screen and (min-width: 900px)
+{
+    .type-bar{
+        width: 60%;
+    }
+}
+
+
+
+
+
+
+

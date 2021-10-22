@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users List</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        .page-header{
+            padding-bottom: 10rem;
+        }
+        ul li {
+            list-style-type: none;
+        }
+
+        .user-contacts li{
+            padding: 1rem;
+            text-align: left;
+        }
+
+        a:hover{
+            text-decoration: none;
+        }
+
+        .chat-btn{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1 class="page-header">
+            Contacts
+        </h1>
+        <div>
+            <ul class="user-contacts">
+
+                {% for user in users: %}
+                    <li>
+                        <a href="/api/users/chat/{{ user.id }}">
+                            {{ user.name }}
+                            {{ user.id }}
+                        </a>
+                        <a href="/api/users/chat/{{ user.id }}" class="btn btn-primary chat-btn">
+                            Chat
+                        </a>
+                    </li>
+                {% endfor %}
+                
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

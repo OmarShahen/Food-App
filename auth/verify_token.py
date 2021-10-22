@@ -13,6 +13,11 @@ def verify_user(access_token):
     except Exception:
         traceback.print_exc()
         return False
+    
+def decode_token(access_token):
+
+    token = jwt.decode(access_token, Config.SECRET_KEY, algorithms=['HS256'])
+    return token
 
 
 

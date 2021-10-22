@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/static/chat.css">
+    <!-- <link rel="stylesheet" href="../static/chat.css"> -->
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="chat-header">
+            <h3 class="d-inline">
+                Chat
+            </h3>
+        </div>
+            <div class="row">
+                <div class="col-md-4 users">
+                    <h4>
+                        Contacts
+                    </h4>
+                    <!-- Chat Section -->
+                    <ul class="users-contacts">
+                        <div>
+                            <input type="text" id="receiverID" class="form-control" placeholder="Receiver ID">
+                            <input type="text" id="accessToken" class="form-control" placeholder="Access Token">
+                            <button class="btn btn-primary" id="update-chat-btn">Change Data</button>
+                        </div>
+                    </ul>
+                </div>
+                <div class="col-md-8 user-chat">
+                    <div class="user-chat-header">
+                        <img src="/static/default_avatar.jpg" class="avatar">
+                        <!-- <img src="../static/default_avatar.jpg" class="avatar"> -->
+                        <strong class="receiver-name">
+                        </strong>
+                        <br>
+                        <span class="text-success" style="padding: 0 0 0 6rem;">
+                            status
+                        </span>
+                    </div>
+                    <div class="user-messages">    
+                        
+                    </div>
+                        <div class="input-background">
+                        <form id="chat-input-form">
+                            <input type="text" name="chat-bar" class="form-control type-bar" placeholder="type message here..."/>   
+                            <input type="submit" value="send" class="btn btn-primary send-btn">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj" crossorigin="anonymous"></script>
+    <script>
+        var socket = io('/user-chat')
+        socket.on('connect', () => {
+            socket.emit('my_event', { data: 'I am connected!' })
+            
+            socket.on('my_response', (data) => {
+                console.log(data)
+            })
+        
+        })
+    </script>  
+
+    <script>
+
+        let roomID
+        let currentUser
+        let otherUser
+
+        const loadChat = (receiverID, accessToken) => {
+            const xhttp = new XMLHttpRequest()
+            xhttp.onload = () => {
+                chat = JSON.parse(xhttp.responseText)
+                console.log(chat)
+                viewUsers(chat.currentUser, chat.users)
+                if(chat.chat.length != 0)
+                {
+                    showChat(chat.chat, chat.currentUser)
+                    joinRooms(chat.chat[0].id, getOtherUser(chat.currentUser, chat.users))  
+                    roomID = chat.chat[0].id 
+                }
+                currentUser = chat.currentUser
+                otherUser = getOtherUser(chat.currentUser, chat.users)
+                
+            }
+
+            xhttp.open('GET', `/api/users/chat/${receiverID}`)
+            xhttp.setRequestHeader('x-access-token', accessToken)
+            xhttp.send()
+        }
+        
+        document.querySelector('#update-chat-btn').addEventListener('click', (e) => {
+            e.preventDefault()
+            loadChat(
+                document.querySelector('#receiverID').value,
+                document.querySelector('#accessToken').value
+            )
+        })
+
+
+    const listUsers = (usersList) => {
+        for(let i=0;i<usersList.length;i++)
+        {
+            document.querySelector('.users-contacts').innerHTML += `
+                <li>
+                    <img src="/static/default_avatar.jpg">
+                    <strong>
+                        ${ usersList[i].name }
+                    </strong>
+                </li>
+                <hr>
+            `
+        }
+    }
+
+    const viewUsers = (currentUser, usersList) => {
+        
+        for(let i=0;i<usersList.length;i++)
+        {
+            if(currentUser != usersList[i].id)
+            {
+                document.querySelector('.receiver-name').innerHTML = usersList[i].name
+            }
+        }
+    }
+    
+    const getOtherUser = (currentUser, usersList) => {
+
+        for(let i=0;i<usersList.length;i++)
+        {
+            if(currentUser != usersList[i].id)
+            {
+                return usersList[i].id
+            }
+        }
+    }
+
+
+    const showChat = (chatList, currentUser) => {
+
+
+        let chatContainer = document.querySelector('.user-messages')
+        for(let i=0;i<chatList[0].messages.length;i++)
+        {
+            let messageDoc = chatList[0].messages[i]
+            if(currentUser == messageDoc.owner)
+            {
+                chatContainer.innerHTML += `
+                    <div class="left-message">
+                        <p class="message">
+                            ${messageDoc.text}
+                        </p>
+                    </div>
+                `
+            }
+            else{
+                chatContainer.innerHTML += `
+                    <div class="right-message">
+                        <p class="message">
+                            ${messageDoc.text}
+                        </p>
+                    </div>
+                `
+            }
+
+
+        }
+    } 
+
+    const joinRooms = (roomID, receiverID) => {
+        console.log(roomID)
+        console.log('Here')
+        socket.emit('join_chat', {
+            receiverID: receiverID,
+            accessToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjE3MGY3ZDQ3MDA0MDQyM2U5Njk1ZTQwIn0.63r0ItJ-JIv0GqgfylqF6K_8c5S6D7hyL1X_e-qyoVE',
+            roomID: roomID 
+        })
+    }
+    
+
+    const chatForm = document.querySelector('#chat-input-form')
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+        console.log('submit')
+        console.log({
+            currentUser,
+            otherUser
+        })
+        socket.emit('send_message', {
+            message: chatForm['chat-bar'].value,
+            roomID: roomID,
+            ownerID: currentUser,
+            receiverID: otherUser
+        })
+        chatForm.reset()
+    })
+
+    const addMessageUI = (messageSide, message) => {
+        document.querySelector('.user-messages').innerHTML += 
+        `
+            <div class="${messageSide}-message">
+                <p class="message">
+                    ${message}
+                </p>
+            <div>
+         
+        `
+    }
+
+    socket.on('receive-message', data => {
+        roomID = data['roomID']
+        if(currentUser == data['ownerID'])
+        {
+            addMessageUI('left', data['message'])
+        } 
+        else
+        {
+            addMessageUI('right', data['message'])
+        }
+
+    })
+    </script>
+  
+</body>
+</html>
