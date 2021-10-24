@@ -86,9 +86,7 @@ li img, .avatar{
     margin-left: 1rem;
 }
 @media only screen and (max-width: 900px) {
-    .users {
-        display: none;
-    }
+    
     .send-btn {
         margin-left: 0.5px;
     }

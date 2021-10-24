@@ -31,13 +31,12 @@
             <div class="row">
                 <div class="col-md-4 users">
                     <h4>
-                        Contacts
+                        Contacts Of {{ user_name }}
                     </h4>
                     <!-- Chat Section -->
                     <ul class="users-contacts">
                         <div>
                             <input type="text" id="receiverID" class="form-control" placeholder="Receiver ID">
-                            <input type="text" id="accessToken" class="form-control" placeholder="Access Token">
                             <button class="btn btn-primary" id="update-chat-btn">Change Data</button>
                         </div>
                     </ul>
@@ -95,7 +94,9 @@
                 viewUsers(chat.currentUser, chat.users)
                 if(chat.chat.length != 0)
                 {
+                    
                     showChat(chat.chat, chat.currentUser)
+                    console.log('Here in rooms')
                     joinRooms(chat.chat[0].id, getOtherUser(chat.currentUser, chat.users))  
                     roomID = chat.chat[0].id 
                 }
@@ -111,10 +112,10 @@
         
         document.querySelector('#update-chat-btn').addEventListener('click', (e) => {
             e.preventDefault()
-            loadChat(
-                document.querySelector('#receiverID').value,
-                document.querySelector('#accessToken').value
-            )
+            let receiverID = document.querySelector('#receiverID').value
+            loadChat(receiverID, '{{ access_token }}')
+
+
         })
 
 
@@ -192,7 +193,7 @@
         console.log('Here')
         socket.emit('join_chat', {
             receiverID: receiverID,
-            accessToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjE3MGY3ZDQ3MDA0MDQyM2U5Njk1ZTQwIn0.63r0ItJ-JIv0GqgfylqF6K_8c5S6D7hyL1X_e-qyoVE',
+            accessToken: '{{ access_token }}',
             roomID: roomID 
         })
     }

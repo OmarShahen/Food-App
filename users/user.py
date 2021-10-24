@@ -58,8 +58,10 @@ def chat(receiver_id):
         user_id = decode_token(request.headers['x-access-token'])['user_id']
         chats = Chats.objects.filter(members__in=[user_id])
         members_chat = Chats.getMembersChat(user_id, receiver_id, chats)
+        users = None
 
         if len(members_chat) == 0:
+            print('Here in empty condition')
             Chats(
                     members=[user_id, receiver_id],
                     messages=[
@@ -70,8 +72,10 @@ def chat(receiver_id):
                         )
                     ]
                 ).save()
+            chats = Chats.objects.filter(members__in=[user_id])
+            members_chat = Chats.getMembersChat(user_id, receiver_id, chats)
+            
         users = Users.objects.filter(id__in=[receiver_id, user_id]).exclude('oauth_id')
-
         return jsonify({
             'accepted': True,
             'chat': serialize_chats_id(members_chat),
