@@ -1,0 +1,26 @@
+body{
+    margin: 0;
+    padding: 0;
+    /*background-color: #f2f2f2;*/
+}
+
+.page-header{
+    margin-top: 5rem;
+    margin-bottom: 4rem;
+}
+
+input[type="search"]{
+    border-radius: 50px;
+    width: 60%;
+    margin: auto;
+    padding-left: 2rem;
+    font-weight: lighter;
+}
+
+.search-bar{
+    margin-bottom: 3rem;
+}
+
+a:hover{
+    text-decoration: none;
+}

@@ -102,7 +102,25 @@ def chat_page(user_id, receiver_id):
 def chat_page_1():
     return render_template('user-chat.html')
 
+@user_route.route('/users/search/<user_email>')
+def search_users(user_email):
+    try:
+        
+        users_db = Users.objects.filter(email__icontains=user_email)
+        return jsonify({
+            'accepted': True,
+            'users': serialize_users_id(users_db)
+        }), 200
+    except Exception:
+        traceback.print_exc()
+        return jsonify({
+            'accepted': False,
+            'message': 'internal server error'
+        }), 500
 
+@user_route.route('/users/search')
+def search_page():
+    return render_template('search-users.html')
 
 
 
